@@ -3,10 +3,6 @@ name: Test and Deploy
 on:
   pull_request:
 
-# 略
-on:
-  pull_request:
-
 jobs:
   test:
     name: Test
