@@ -3,10 +3,6 @@ name: Test and Deploy
 on:
   pull_request:
 
-# 略
-on:
-  pull_request:
-
 jobs:
   test:
     name: Test
@@ -19,10 +15,11 @@ jobs:
         with:
           ruby-version: 2.6.8
 
-            # 略
-      - uses: ruby/setup-ruby@v1
+      - name: Cache bundle
+        uses: actions/cache@v2
         with:
-          ruby-version: 2.6.8
+          path: vendor/bundle
+          key: bundle-v1-${{ hashFiles('Gemfile.lock') }}
 
       - uses: actions/setup-node@v2
         with:
@@ -34,6 +31,12 @@ jobs:
           bundle config --local without production
           bundle install
  
+      - name: Cache yarn
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: yarn-v1-${{ hashFiles('yarn.lock') }}
+
       - run: RAILS_ENV=test bundle exec rails assets:precompile
 
       - run: bundle exec rails test
